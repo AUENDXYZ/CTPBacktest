@@ -1,0 +1,53 @@
+# --coding:utf-8--
+
+def init():
+    # 请在set_input函数中填入需要设置的指标参数变量名
+    # 例如计算macd需要设置变量short, long和m
+    # 其中m的默认值为0, short的默认值为3 long的默认值为9
+    set_input("m", short=3, long=9)
+    # 请在set_output函数中填入需要设置的指标输出变量
+    # 例如macd输出三个值: dif, dea和macd
+    # 如果设为macd=True的样式, 表示macd的值总是True
+    set_output("dif", "dea", "macd")
+
+
+def method():
+    """
+    此处填写具体的计算方法
+    ---
+    pandas包自动导入为pd, numpy包自动导入为np, talib已导入, 需要打开文件请使用alias_open
+    ---
+    datetime为日期列表, open为开盘价列表, close为收盘价列表, high为最高价列表
+
+    low为最低价列表, volume为成交量列表
+    或使用df, df是一个dataframe, 有[datetime, open, close, high, low, volume列],其中datetime列为索引
+    数据的使用长度为200
+    ---
+    输出变量必须为:
+    1. 字典类型, 字典中的值必须为列表形式(list, array)
+    2. dataframe格式, 必须包含datetime列, 所有输出参数列
+    """
+    def ema(n):
+        # 计算ema
+        result = []
+        for c in close:
+            if np.isnan(c):
+                c = np.nan_to_num(c)
+            if result:
+                result.append((2 * c + (n - 1) * result[-1]) / (n + 1))
+            else:
+                result.append(c)
+        return result
+
+    a = ema(short)
+    b = ema(long)
+    dif = pd.array(a) - pd.array(b)
+    dea = []
+    for d in dif:
+        if dea:
+            dea.append((2 * d + (m - 1) * dea[-1]) / (m + 1))
+        else:
+            dea.append(d)
+    dea = pd.array(dea)
+    macd = 2 * (dif - dea)
+    return {"dif": dif, "dea": dea, "macd": macd}
