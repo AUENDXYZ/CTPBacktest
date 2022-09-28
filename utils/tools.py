@@ -6,6 +6,8 @@ import pandas as pd
 from functools import lru_cache
 from pathlib import Path
 from hashlib import md5
+from operator import gt, lt, eq, ne
+from functools import partial
 from utils.paths import MODULE_MAPPING_NAME
 
 
@@ -86,3 +88,10 @@ def remove_module_mapping_name(module_name: str):
         mappings.pop(module_name)
     with open(MODULE_MAPPING_NAME, "w", encoding="utf-8") as f:
         json.dump(f, mappings, ensure_ascii=False, indent=4)
+
+
+__mapping = {">": gt, "<": lt, "=": eq, "!=": ne}
+
+
+def compare_type(symbol):
+    return __mapping[symbol]

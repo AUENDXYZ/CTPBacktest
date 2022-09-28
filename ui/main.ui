@@ -9,8 +9,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>990</width>
-    <height>480</height>
+    <width>1100</width>
+    <height>550</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -425,8 +425,27 @@ padding: 0;</string>
                 <layout class="QVBoxLayout" name="verticalLayout_4">
                  <item>
                   <widget class="QComboBox" name="metric_combo">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="baseSize">
+                    <size>
+                     <width>0</width>
+                     <height>20</height>
+                    </size>
+                   </property>
+                   <property name="font">
+                    <font>
+                     <bold>true</bold>
+                    </font>
+                   </property>
                    <property name="styleSheet">
-                    <string notr="true">background-color:white;</string>
+                    <string notr="true">background-color:white;
+border: 1px solid gray;
+border-radius:0;</string>
                    </property>
                   </widget>
                  </item>
@@ -471,7 +490,8 @@ padding: 0;</string>
                  <item>
                   <widget class="QScrollArea" name="scrollArea_2">
                    <property name="styleSheet">
-                    <string notr="true">border-radius:10%;</string>
+                    <string notr="true">border-radius:0;
+background-color:white;</string>
                    </property>
                    <property name="widgetResizable">
                     <bool>true</bool>
@@ -481,10 +501,37 @@ padding: 0;</string>
                      <rect>
                       <x>0</x>
                       <y>0</y>
-                      <width>204</width>
-                      <height>101</height>
+                      <width>286</width>
+                      <height>125</height>
                      </rect>
                     </property>
+                    <property name="styleSheet">
+                     <string notr="true">border: 1px solid gray;</string>
+                    </property>
+                    <layout class="QVBoxLayout" name="verticalLayout_9">
+                     <property name="leftMargin">
+                      <number>0</number>
+                     </property>
+                     <property name="topMargin">
+                      <number>0</number>
+                     </property>
+                     <property name="rightMargin">
+                      <number>0</number>
+                     </property>
+                     <property name="bottomMargin">
+                      <number>0</number>
+                     </property>
+                     <item>
+                      <layout class="QVBoxLayout" name="params_layout">
+                       <property name="spacing">
+                        <number>0</number>
+                       </property>
+                       <property name="sizeConstraint">
+                        <enum>QLayout::SetDefaultConstraint</enum>
+                       </property>
+                      </layout>
+                     </item>
+                    </layout>
                    </widget>
                   </widget>
                  </item>
@@ -526,7 +573,8 @@ padding: 0;</string>
                  <item>
                   <widget class="QScrollArea" name="scrollArea_3">
                    <property name="styleSheet">
-                    <string notr="true">border-radius:10%;</string>
+                    <string notr="true">border-radius:0;
+background-color:white;</string>
                    </property>
                    <property name="widgetResizable">
                     <bool>true</bool>
@@ -536,10 +584,34 @@ padding: 0;</string>
                      <rect>
                       <x>0</x>
                       <y>0</y>
-                      <width>204</width>
-                      <height>181</height>
+                      <width>286</width>
+                      <height>219</height>
                      </rect>
                     </property>
+                    <property name="styleSheet">
+                     <string notr="true">border: 1px solid gray;</string>
+                    </property>
+                    <layout class="QVBoxLayout" name="verticalLayout_10">
+                     <property name="leftMargin">
+                      <number>0</number>
+                     </property>
+                     <property name="topMargin">
+                      <number>0</number>
+                     </property>
+                     <property name="rightMargin">
+                      <number>0</number>
+                     </property>
+                     <property name="bottomMargin">
+                      <number>0</number>
+                     </property>
+                     <item>
+                      <layout class="QVBoxLayout" name="condition_layout">
+                       <property name="spacing">
+                        <number>0</number>
+                       </property>
+                      </layout>
+                     </item>
+                    </layout>
                    </widget>
                   </widget>
                  </item>
@@ -894,21 +966,41 @@ background: white;
                   <widget class="QScrollArea" name="scrollArea">
                    <property name="styleSheet">
                     <string notr="true">border-color:rgb(243,243,243);
-background-color: rgb(243,243,243);</string>
+background-color: rgb(243,243,243);
+border-radius:0;</string>
                    </property>
                    <property name="widgetResizable">
                     <bool>true</bool>
                    </property>
-                   <widget class="QWidget" name="scrollAreaWidgetContents">
+                   <widget class="QWidget" name="scrollAreaContent">
                     <property name="geometry">
                      <rect>
                       <x>0</x>
                       <y>0</y>
                       <width>276</width>
-                      <height>108</height>
+                      <height>151</height>
                      </rect>
                     </property>
-                    <layout class="QFormLayout" name="formLayout"/>
+                    <layout class="QHBoxLayout" name="horizontalLayout_19">
+                     <property name="spacing">
+                      <number>0</number>
+                     </property>
+                     <property name="leftMargin">
+                      <number>0</number>
+                     </property>
+                     <property name="topMargin">
+                      <number>0</number>
+                     </property>
+                     <property name="rightMargin">
+                      <number>0</number>
+                     </property>
+                     <property name="bottomMargin">
+                      <number>0</number>
+                     </property>
+                     <item>
+                      <layout class="QVBoxLayout" name="added_layout"/>
+                     </item>
+                    </layout>
                    </widget>
                   </widget>
                  </item>
@@ -1095,7 +1187,7 @@ background-color: white;</string>
                   </widget>
                  </item>
                  <item>
-                  <widget class="QLineEdit" name="strategy_name"/>
+                  <widget class="QLineEdit" name="model_name"/>
                  </item>
                  <item>
                   <spacer name="horizontalSpacer">
@@ -1452,14 +1544,24 @@ hr { height: 1px; border-width: 0; }
                       <widget class="QWidget" name="widget_11" native="true">
                        <layout class="QVBoxLayout" name="verticalLayout_8">
                         <item>
-                         <widget class="QComboBox" name="model_options"/>
+                         <widget class="QComboBox" name="model_options">
+                          <property name="font">
+                           <font>
+                            <bold>true</bold>
+                           </font>
+                          </property>
+                          <property name="styleSheet">
+                           <string notr="true">background-color:white;</string>
+                          </property>
+                         </widget>
                         </item>
                         <item>
-                         <widget class="QTableView" name="model_show_table">
+                         <widget class="QPlainTextEdit" name="model_show">
                           <property name="styleSheet">
-                           <string notr="true">border: 1px solid gray;
-border-radius: 5px;
-padding: 0;</string>
+                           <string notr="true">background-color:rgb(250,250,250);</string>
+                          </property>
+                          <property name="readOnly">
+                           <bool>true</bool>
                           </property>
                          </widget>
                         </item>
@@ -1646,7 +1748,11 @@ color: rgb(154,197,244)
                          </widget>
                         </item>
                         <item row="1" column="0">
-                         <widget class="QLineEdit" name="tick_file"/>
+                         <widget class="QLineEdit" name="tick_file">
+                          <property name="readOnly">
+                           <bool>true</bool>
+                          </property>
+                         </widget>
                         </item>
                         <item row="2" column="0" colspan="2">
                          <widget class="QWidget" name="widget_10" native="true">

@@ -5,6 +5,7 @@ import numpy as np
 from pathlib import Path
 from importlib import import_module
 from typing import Dict, Optional
+from copy import deepcopy
 from utils.tools import (
     get_python_files,
     gen_fake_values,
@@ -72,29 +73,88 @@ class ModuleManager:
 
 class SingleModule:
     def __init__(self, name: str, path: Path, module_type: str):
-        self.name = name
-        self.path = path
-        self.module_type = module_type
-        self.input_params = []
-        self.default_params = {}
-        self.output_params = []
-        self.output_default_params = {}
-        self.module: Optional[object] = None
-        self.results = {}
+        self.name = name  # 名称
+        self.path = path  # 路径
+        self.module_type = module_type  # default/user
+        self.input_params = []  # 输入参数
+        self.default_params = {}  # 输入参数的默认值{参数名:参数默认值}
+        self.output_params = []  # 输出参数名列表
+        self.output_default_params = {}  # 允许设置输出参数值为固定值{参数名: 值}
+        self.module: Optional[object] = None  # 真实的module
         self.load()
 
+    def __call__(self, serial_name):
+        # init中的参数对每个同类的module来说都是相同的, 这里的参数每个module是用户单独设置的
+        class Module:
+            def __init__(self, serial_name: str, parent: SingleModule):
+                self.results = {}  # module的最新计算结果
+                self.metric_params = {}  # 回测时真正使用的参数值
+                self.condition = {}  # 回测时的条件判断
+                self.condition_tip = {}
+                self.serial_name = serial_name
+                self.name = parent.name
+                self.input_params = parent.input_params
+                self.default_params = parent.default_params
+                self.output_params = parent.output_params
+                self.output_default_params = parent.default_params
+                self.module = parent.module
+
+            def __set(self, attribute, clear, items):
+                if clear:
+                    attribute.clear()
+                for k, v in items.items():
+                    attribute[k] = v
+
+            def set_metric_params(self, clear=False, **kwargs):
+                self.__set(self.metric_params, clear, kwargs)
+
+            def set_condition(self, clear=False, **kwargs):
+                self.__set(self.condition, clear, kwargs)
+
+            def set_condition_tip(self, clear=False, **kwargs):
+                self.__set(self.condition_tip, clear, kwargs)
+
+            def update_value(self, **kwargs):
+                # 将数值更新到module中, 比如high, low, open, close等值
+                for k, v in kwargs.items():
+                    setattr(self.module, k, v)
+
+            def remove_value(self, *args):
+                # 清除属性
+                for k in args:
+                    delattr(self.module, k)
+
+            def backtest(self):
+                # 计算
+                results = getattr(self.module, "method")()
+                self.results = results
+
+            def tooltip(self):
+                tooltip = (
+                        "\n参数\n"
+                        + "\n".join([f"{k}={v}" for k, v in self.metric_params.items()])
+                        + "\n条件\n"
+                        + "\n".join(["".join(v) for v in self.condition_tip.values()])
+                )
+                return tooltip
+
+        return Module(str(serial_name), self)
+
     def set_input(self, *args, **kwargs):
+        # 回调到module中
         self.input_params = list(args)
         self.default_params = {i: 0 for i in args}
         self.input_params += list(kwargs.keys())
         self.default_params.update(kwargs)
 
     def set_output(self, *args, **kwargs):
+        # 回调到module中
         self.output_params = list(args)
         self.output_params += list(kwargs.keys())
         self.output_default_params = kwargs
 
     def load(self):
+        # 载入module
         p_path = str(self.path.parent)
         if p_path not in sys.path:
             sys.path.append(p_path)
@@ -112,15 +172,9 @@ class SingleModule:
         getattr(self.module, "method")
         fake_data = gen_fake_values()
         for i in range(1, len(fake_data["datetime"]) + 1):
-            self.update_value(**{k: v[:i] for k, v in fake_data.items()})
-            self.backtest()
-        self.results.clear()
+            for k, v in fake_data.items():
+                setattr(self.module, k, v)
+            getattr(self.module, "method")()
+        for k in list(fake_data.keys()):
+            delattr(self.module, k)
         return True
-
-    def update_value(self, **kwargs):
-        for k, v in kwargs.items():
-            setattr(self.module, k, v)
-
-    def backtest(self):
-        results = getattr(self.module, "method")()
-        self.results = results
