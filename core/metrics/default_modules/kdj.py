@@ -21,9 +21,9 @@ def method():
     """
 
     def cal_rsv(n):
-        l_low = talib.MIN(low, n)
-        h_high = talib.MAX(high, n)
-        rsv = (close - l_low) / (h_high - l_low) * 100.
+        l_low = talib.MIN(np.array(low), n)
+        h_high = talib.MAX(np.array(high), n)
+        rsv = (np.array(close) - l_low) / (h_high - l_low) * 100.
         return rsv
 
     def SMA_CN(arr, n, m):
@@ -39,8 +39,9 @@ def method():
 
         return np.array(result)
 
-    rsv = cal_rsv(high, low, close, fastk_period)
+    rsv = cal_rsv(fastk_period)
     k = SMA_CN(rsv, slowk_period, 1)
     d = SMA_CN(k, slowd_period, 1)
     j = 3 * k - 2 * d
-    return {"k": k, "d": d, "j": j}
+    return {"k": round(k[-1], 2), "d": round(d[-1], 2), "j": round(j[-1], 2)}
+

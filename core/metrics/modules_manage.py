@@ -1,10 +1,11 @@
 # --coding:utf-8--
 import sys
+import talib
 import pandas as pd
 import numpy as np
 from pathlib import Path
 from importlib import import_module
-from typing import Dict, Optional
+from typing import Dict, Optional, List
 from copy import deepcopy
 from utils.tools import (
     get_python_files,
@@ -87,7 +88,7 @@ class SingleModule:
         # init中的参数对每个同类的module来说都是相同的, 这里的参数每个module是用户单独设置的
         class Module:
             def __init__(self, serial_name: str, parent: SingleModule):
-                self.results = {}  # module的最新计算结果
+                self.result = {}  # module的最新计算结果
                 self.metric_params = {}  # 回测时真正使用的参数值
                 self.condition = {}  # 回测时的条件判断
                 self.condition_tip = {}
@@ -107,6 +108,7 @@ class SingleModule:
 
             def set_metric_params(self, clear=False, **kwargs):
                 self.__set(self.metric_params, clear, kwargs)
+                self.update_value(**kwargs)
 
             def set_condition(self, clear=False, **kwargs):
                 self.__set(self.condition, clear, kwargs)
@@ -126,8 +128,15 @@ class SingleModule:
 
             def backtest(self):
                 # 计算
-                results = getattr(self.module, "method")()
-                self.results = results
+                result = getattr(self.module, "method")()
+                result["datetime"] = getattr(self.module, "datetime")[-1]
+                self.result = result
+
+            def catch_condition(self):
+                for k, v in self.result.items():
+                    if k in self.condition and self.condition[k](v):
+                        return True
+                return False
 
             def tooltip(self):
                 tooltip = (
@@ -161,6 +170,7 @@ class SingleModule:
         self.module = import_module(self.name)
         setattr(self.module, "pd", pd)
         setattr(self.module, "np", np)
+        setattr(self.module, "talib", talib)
         setattr(self.module, "set_input", self.set_input)
         setattr(self.module, "set_output", self.set_output)
         getattr(self.module, "init")()

@@ -1,7 +1,7 @@
 # --coding:utf-8--
 
 def init():
-    set_input("m", short=3, long=9)
+    set_input(m=3, short=3, long=9)
     set_output("dif", "dea", "macd")
 
 
@@ -30,4 +30,4 @@ def method():
             dea.append(d)
     dea = pd.array(dea)
     macd = 2 * (dif - dea)
-    return {"dif": dif, "dea": dea, "macd": macd}
+    return {"dif": round(dif[-1], 2), "dea": round(dea[-1], 2), "macd": round(macd[-1], 2)}

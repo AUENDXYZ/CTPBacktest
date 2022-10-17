@@ -7,8 +7,11 @@ from functools import lru_cache
 from pathlib import Path
 from hashlib import md5
 from operator import gt, lt, eq, ne
-from functools import partial
+from collections import defaultdict
 from utils.paths import MODULE_MAPPING_NAME
+
+
+
 
 
 def get_python_files(file_path: Path):
@@ -95,3 +98,35 @@ __mapping = {">": gt, "<": lt, "=": eq, "!=": ne}
 
 def compare_type(symbol):
     return __mapping[symbol]
+
+
+def load_data(file_path):
+    df = pd.read_csv(file_path, encoding="gbk", encoding_errors="ignore")
+    return df
+
+
+def is_weekday(date: dt.date):
+    return date.weekday() + 1 < 6
+
+
+time_59_59 = dt.time(23, 59)
+time_0_0 = dt.time(0, 0)
+
+
+@lru_cache()
+def is_in_time_range(target: dt.time, left: dt.time, right: dt.time):
+    if left <= right:
+        return left <= target <= right
+    else:
+        return left <= target <= time_59_59 or time_0_0 <= target <= right
+
+
+def trade_time_dict(trade_range_array):
+    _dict = defaultdict(bool)
+    for i in range(1440):
+        t = dt.time(hour=i // 60, minute=i % 60)
+        for [left, right] in trade_range_array:
+            if is_in_time_range(t, left, right):
+                _dict[t] = True
+                break
+    return _dict

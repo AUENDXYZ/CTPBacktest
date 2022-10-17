@@ -1,8 +1,8 @@
 <RCC>
   <qresource prefix="nav_btn">
     <file>backtest.svg</file>
-    <file>create.svg</file>
     <file>home.svg</file>
+    <file>create.svg</file>
     <file>setting.svg</file>
   </qresource>
   <qresource prefix="create">

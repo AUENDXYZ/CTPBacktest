@@ -24,8 +24,7 @@ def method():
     数据的使用长度为200
     ---
     输出变量必须为:
-    1. 字典类型, 字典中的值必须为列表形式(list, array)
-    2. dataframe格式, 必须包含datetime列, 所有输出参数列
+    1. 字典类型, 字典中的值必须为数字形式(int, float)
     """
     def ema(n):
         # 计算ema
@@ -50,4 +49,4 @@ def method():
             dea.append(d)
     dea = pd.array(dea)
     macd = 2 * (dif - dea)
-    return {"dif": dif, "dea": dea, "macd": macd}
+    return {"dif": dif[-1], "dea": dea[-1], "macd": macd[-1]}
